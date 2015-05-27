@@ -1,0 +1,13 @@
+# Mike Azar's S3 Handling functions
+s3putdir()  { /apollo/env/ConsumerInstockValueApps/bin/CopyS3FilesApp --domain=prod --realm=NA --src=./$1 --dest=s3://fma-analytics-team/$2 --awsCredentialsName=fma.analytics.team.AWSKeys --s3SymmetricKeyName=fma.analytics.team.S3EncryptionKey                      }
+s3getdir()  { /apollo/env/ConsumerInstockValueApps/bin/CopyS3FilesApp --domain=prod --realm=NA --src=s3://fma-analytics-team/$1 --dest=./$2 --awsCredentialsName=fma.analytics.team.AWSKeys --s3SymmetricKeyName=fma.analytics.team.S3EncryptionKey                      }
+s3putfile() { /apollo/env/ConsumerInstockValueApps/bin/PushS3File     --domain=prod --realm=NA --src=./$1 --dest=s3://fma-analytics-team/$2 --awsCredentialsName=fma.analytics.team.AWSKeys --s3SymmetricKeyName=fma.analytics.team.S3EncryptionKey --tmpDir=/arch-01/tmp }
+s3getfile() { /apollo/env/ConsumerInstockValueApps/bin/GetS3File      --domain=prod --realm=NA --src=s3://fma-analytics-team/$1 --dest=./$2 --awsCredentialsName=fma.analytics.team.AWSKeys --s3SymmetricKeyName=fma.analytics.team.S3EncryptionKey                      }
+s3ls()      { /apollo/env/ConsumerInstockValueApps/bin/GetS3File      --domain=prod --realm=NA --src=s3://fma-analytics-team/$1 --listFiles --awsCredentialsName=fma.analytics.team.AWSKeys --s3SymmetricKeyName=fma.analytics.team.S3EncryptionKey                      }
+
+# SQLPlus Configurations
+export ORACLE_VERSION=10.2.0.2
+export ORACLE_HOME=/opt/app/oracle/product/${ORACLE_VERSION}/client
+export PATH=$ORACLE_HOME/bin:$PATH
+export LD_LIBRARY_PATH=$ORACLE_HOME/lib:$LD_LIBRARY_PATH
+export TNS_ADMIN=/home/kgolyaev

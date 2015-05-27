@@ -1,0 +1,111 @@
+# determine which host we are on
+HOST=$(hostname | cut -d '.' -f1)
+if [[ $HOST == "u7427ea1410e95101c983" ]]; then
+  # this is kgolyaev's devbox
+  HOME_FOLDER="/home/local/ANT/$USERNAME"
+  HOST_PRETTY="Ubuntu"
+  alias win="cd /Volumes/FMA/kgolyaev"
+elif [[ $HOST == "0c4de9b5e142" ]]; then
+  # this is kgolyaev's macbook
+  HOME_FOLDER="/Users/$USERNAME"
+  HOST_PRETTY="Macbook"
+  alias win="cd /Volumes/FMA/kgolyaev"
+else
+  HOME_FOLDER="/home/$USERNAME"
+  HOST_PRETTY=$HOST
+  alias win="cd /Volumes/FMA/kgolyaev"
+  prompt adam1
+fi
+
+# configure prompt using new data
+#PROMPT="%F{white}%K{blue}%n@$HOST_PRETTY%k%f %F{green}%~ 
+# %B%%%b%f "
+#RPROMPT=""
+
+##### General aliases that are time-saving #####
+alias ls="ls -ahsGF"
+
+# find process id and kill it
+pskill() { kill `ps aux | grep $1 | grep (Applications|usr) | cut -d " " -f 9` }
+
+# background ssh to virtual machine
+alias devbg="ssh -X -f kgolyaev@kgolyaev.desktop.amazon.com gnome-panel"
+
+# screen shortcuts
+alias sls="screen -ls"
+alias sx="screen -x"
+
+# git shortcuts
+alias gs="git status"
+gclone() {git clone ssh://git.amazon.com:2222/pkg/$1 }
+
+
+##### HOST ACCESS SETUP - You Should Not Need To Modify These #####
+
+# hostname aliases
+
+IAD1="fma-analytics-6001.iad6.amazon.com"
+IAD2="fma-analytics-6002.iad6.amazon.com"
+PDX1="fma-analytics-60001.pdx1.amazon.com"
+PDX2="fma-analytics-60002.pdx1.amazon.com"
+FMDP1="fma-modeling-data-pipeline-25001.iad12.amazon.com"
+FMDP2="fma-modeling-data-pipeline-25002.iad12.amazon.com"
+FMDP3="fma-modeling-data-pipeline-25003.iad12.amazon.com"
+DEVBOX="$USERNAME.desktop.amazon.com"
+UBUNTU="$USERNAME-ubuntu.aka.amazon.com"
+
+# define SSH aliases
+
+alias kgolyaev="ssh -X $USERNAME@$DEVBOX"
+alias kubuntu="ssh $USERNAME@$UBUNTU"
+
+alias iad1="ssh $USERNAME@$IAD1"
+alias iad2="ssh $USERNAME@$IAD2"
+alias pdx1="ssh $USERNAME@$PDX1"
+alias pdx2="ssh $USERNAME@$PDX2"
+
+alias fmdp1="ssh $USERNAME@$FMDP1"
+alias fmdp2="ssh $USERNAME@$FMDP2"
+alias fmdp3="ssh $USERNAME@$FMDP3"
+
+# secure copy functions
+
+toiad1()   { rsync -avzr --chmod=u+rwx,g+rwx,o+rx --perms --progress ./$1 $USERNAME@$IAD1:/$2 }
+fromiad1() { rsync -avzr --chmod=u+rwx,g+rwx,o+rx --perms --progress $USERNAME@$IAD1:/$1 ./$2 }
+toiad2()   { rsync -avzr --chmod=u+rwx,g+rwx,o+rx --perms --progress ./$1 $USERNAME@$IAD2:/home/kgolyaev/$2 }
+fromiad2() { rsync -avzr --chmod=u+rwx,g+rwx,o+rx --perms --progress $USERNAME@$IAD2:/home/kgolyaev/$1 ./$2 }
+topdx1()   { rsync -avzr --chmod=u+rwx,g+rwx,o+rx --perms --progress ./$1 $USERNAME@$PDX1:/local/common/$2 }
+frompdx1() { rsync -avzr --chmod=u+rwx,g+rwx,o+rx --perms --progress $USERNAME@$PDX1:/local/common/$1 ./$2 }
+topdx2()   { rsync -avzr --chmod=u+rwx,g+rwx,o+rx --perms --progress ./$1 $USERNAME@$PDX2:/local/common/$2 }
+frompdx2() { rsync -avzr --chmod=u+rwx,g+rwx,o+rx --perms --progress $USERNAME@$PDX2:/local/common/$1 ./$2 }
+
+toubu()   { rsync -avzr --chmod=u+rwx,g+rwx,o+rx --perms --progress ./$1 $USERNAME@$UBUNTU:/home/local/ANT/$USERNAME/$2 }
+fromubu() { rsync -avzr --chmod=u+rwx,g+rwx,o+rx --perms --progress $USERNAME@$UBUNTU:/home/local/ANT/$USERNAME/$1 ./$2 }
+todev()   { rsync -avzr --chmod=u+rwx,g+rwx,o+rx --perms --progress ./$1 $USERNAME@$DEVBOX:$2 }
+fromdev() { rsync -avzr --chmod=u+rwx,g+rwx,o+rx --perms --progress $USERNAME@$DEVBOX:$1 ./$2 }
+
+
+# ec2 shortcuts
+
+EXP1="ec2-54-209-6-75.compute-1.amazonaws.com"
+EXP2="ec2-54-209-143-222.compute-1.amazonaws.com"
+HUGE1="ec2-50-17-171-255.compute-1.amazonaws.com"
+
+alias ec2exp1="ssh -i $HOME_FOLDER/fma-experiments-analysis.pem -o ServerAliveInterval=60 ubuntu@$EXP1"
+toec2exp1()    { scp -i $HOME_FOLDER/fma-experiments-analysis.pem ./$1 ubuntu@$EXP1:/mnt/b/$2 }
+fromec2exp1()  { scp -i $HOME_FOLDER/fma-experiments-analysis.pem ubuntu@$EXP1:/mnt/b/$1 ./$2 }
+alias ec2exp2="ssh -i $HOME_FOLDER/fma-experiments-analysis.pem -o ServerAliveInterval=60 ubuntu@$EXP2"
+toec2exp2()    { scp -i $HOME_FOLDER/fma-experiments-analysis.pem ./$1 ubuntu@$EXP2:/mnt/b/$2 }
+fromec2exp2()  { scp -i $HOME_FOLDER/fma-experiments-analysis.pem ubuntu@$EXP2:/mnt/b/$1 ./$2 }
+alias ec2huge1="ssh -i $HOME_FOLDER/fma-experiments-analysis.pem ec2-user@$HUGE1 -o ServerAliveInterval=60"
+toec2huge1()   { scp -i $HOME_FOLDER/fma-experiments-analysis.pem ./$1 ec2-user@$HUGE1:/mnt/d/$2 }
+fromec2huge1() { scp -i $HOME_FOLDER/fma-experiments-analysis.pem ec2-user@$HUGE1:/mnt/d/$1 ./$2 }
+
+# emr access shortcuts
+
+emrssh()  { ssh -i $HOME_FOLDER/FMAEMREngineKey.pem -o ServerAliveInterval=60 hadoop@$1 }
+toemr()   { scp -i $HOME_FOLDER/FMAEMREngineKey.pem ./$2 hadoop@$1:$3 }
+fromemr() { scp -i $HOME_FOLDER/FMAEMREngineKey.pem hadoop@$1:$2 ./$3 }
+
+
+

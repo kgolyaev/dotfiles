@@ -1,0 +1,9 @@
+[user]
+	name = Konstantin Golyaev
+	email = kgolyaev@amazon.com
+[color]
+	ui = true
+[core]
+	editor = emacs
+[merge]
+	tool = ediff

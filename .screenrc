@@ -1,0 +1,11 @@
+attrcolor b ".I"
+ 
+termcapinfo xterm 'Co#256:AB=\E[48;5;%dm:AF=\E[38;5;%dm'
+term xterm-256color
+ 
+defscrollback 10000
+defbce "on"
+ 
+# Best status line according to http://superuser.com/questions/51988/what-is-the-best-gnu-screen-taskbar-youve-used-seen
+hardstatus alwayslastline 
+hardstatus string '%{= kw}[ %{r}%l%{w} ][%= %{= kw}%?%-Lw%?%{= kW}%n*%f %t%?%?%{= kw}%?%+Lw%?%?%= ]%{w}[%{r} %d/%m/%y %C %A %{w}]%{w}' 
