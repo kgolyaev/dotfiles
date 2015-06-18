@@ -96,7 +96,7 @@
 (global-set-key (kbd "C-x M-t") 'cleanup-region)
 (global-set-key (kbd "C-c n") 'cleanup-buffer)
 
-(setq-default show-trailing-whitespace t)
+(setq-default show-trailing-whitespace nil)
 
 ;; added from prior configs
 (put 'downcase-region 'disabled nil)
@@ -116,4 +116,22 @@
   '(tramp-password-prompt-regexp "^.*\\([pP]assword\\|passphrase\\|Response\\).*:\^@? *"))
  (custom-set-faces)
 
+;; added to avoid emacs droppings
+(setq backup-directory-alist
+`((".*" . ,temporary-file-directory)))
+(setq auto-save-file-name-transforms
+`((".*" ,temporary-file-directory t)))
 
+;; delete into recycle bin
+(setq delete-by-moving-to-trash t)
+
+;; add recent files menu to emacs
+(require 'recentf)
+(recentf-mode 1)
+
+;; English spell checker using Aspell
+(setq-default ispell-program-name "C:/bin/Aspell/bin/aspell.exe")
+(setq text-mode-hook '(lambda() (flyspell-mode t) ))
+
+;; show column numbers as well
+(setq column-number-mode t)
