@@ -5,6 +5,7 @@
 # -----------------------------------------------------------------------------
 import os
 import pandas as pd
+import numpy as np
 from datetime import timedelta
 
 ###############################################################################
@@ -49,5 +50,47 @@ def round_date_to_week_start(
         .dt.start_time + timedelta(POSSIBLE_WEEK_STARTS[week_start_day])
     )
     return result
+###############################################################################                          
+## Replacing NaN values in pandas columns with empty lists
+## Useful when column contains lists, e.g. as a result of .str.split() call
+df = pd.DataFrame({'x': ['a, b', 'alpha', np.nan, 'i, j, k', np.nan, ]})
+df['y'] = df['x'].str.split(', ')
+# at this point, here is the contents of df:
+#          x          y
+# 0     a, b     [a, b]
+# 1    alpha    [alpha]
+# 2      NaN        NaN
+# 3  i, j, k  [i, j, k]
+# 4      NaN        NaN
+df['z'] = df['y'].copy()
+# method 1 - work in new-ish pandas
+df.loc[df['y'].isna(), 'y'] = [[]] # note: [] instead of [[]] won't work
+# method 2: more robust, but slower
+df['z'] = df['z'].apply(lambda x: x if isinstance(x, list) else [])
+# once values in every row is a list, can, e.g., add two such columns safely
+###############################################################################                          
+## Handling None values in pandas 
+## Useful when splitting column into multiple via .str.split(expand=True)
+df = pd.DataFrame({'x': ['a, b', 'alpha', np.nan, 'i, j, k', np.nan, ]})
+df_split = df['x'].str.split(', ', expand=True)
+# this is what df_split contains at this point:
+#        0     1     2
+# 0      a     b  None
+# 1  alpha  None  None
+# 2    NaN   NaN   NaN
+# 3      i     j     k
+# 4    NaN   NaN   NaN
+
+# newer pandas versions can handle NaN and None together
+df_split.fillna('') # fills both NaN and None with empty strings
+# but if you need to handle None separately, here is a useful trick:
+df_split[df_split.applymap(lambda x: x is None)] = 'empty'
+# now all NaNs are preserved, but None's are handled:
+#        0      1      2
+# 0      a      b  empty
+# 1  alpha  empty  empty
+# 2    NaN    NaN    NaN
+# 3      i      j      k
+# 4    NaN    NaN    NaN
 ###############################################################################                          
 
