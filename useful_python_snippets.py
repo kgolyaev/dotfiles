@@ -17,6 +17,12 @@ list_of_files_with_condition = [
                           if y.endswith('csv')]
 
 ###############################################################################                          
+## Get absolute path to directory in which current file is located
+DIRPATH = os.path.abspath(os.path.dirname(__file__))
+## if you need to navigate away from that directory, e.g. one dir above
+## this is how
+REPO_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+###############################################################################                          
 ## Fast rounding of date to week start, 
 ## with custom day-of-week as week_start_day
 POSSIBLE_WEEK_STARTS =  {
